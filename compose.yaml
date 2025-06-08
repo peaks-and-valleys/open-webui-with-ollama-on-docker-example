@@ -1,0 +1,25 @@
+name: <your project name>
+services:
+  open-webui:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities:
+                - gpu
+    network_mode: host
+    volumes:
+      - open-webui:/app/backend/data
+    environment:
+      - OLLAMA_BASE_URL=http://127.0.0.1:11434
+    container_name: open-webui
+    restart: always
+    image: ghcr.io/open-webui/open-webui:ollama
+volumes:
+  open-webui:
+    external: true
+    name: open-webui
+# Equivalent to `docker run -d --gpus all --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama`
+# Generated with https://www.composerize.com
