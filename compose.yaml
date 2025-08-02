@@ -1,6 +1,9 @@
 name: open-webui-with-ollama
 services:
   open-webui:
+    container_name: open-webui
+    image: ghcr.io/open-webui/open-webui:ollama
+    restart: unless-stopped
     deploy:
       resources:
         reservations:
@@ -13,16 +16,30 @@ services:
     volumes:
       - open-webui:/app/backend/data
     environment:
-      - OLLAMA_BASE_URL=http://127.0.0.1:11434
       - ENABLE_WEB_SEARCH=true
-      - WEB_SEARCH_ENGINE=duckduckgo
-    container_name: open-webui
-    restart: always
-    image: ghcr.io/open-webui/open-webui:ollama
+      - WEB_SEARCH_ENGINE=searxng
+      - SEARXNG_QUERY_URL=http://127.0.0.1:8888/search?q=<query>
+  searxng:
+    container_name: searxng
+    image: searxng/searxng:latest
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./searxng:/etc/searxng:rw
+    restart: unless-stopped
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
 volumes:
   open-webui:
     external: true
     name: open-webui
-    
-# Equivalent to `docker run -d --gpus all --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 -e ENABLE_WEB_SEARCH=true -e WEB_SEARCH_ENGINE=duckduckgo --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama`
-# Generated with https://www.composerize.com

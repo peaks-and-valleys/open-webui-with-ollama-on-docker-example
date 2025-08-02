@@ -28,14 +28,8 @@ https://www.ollama.com/library の中から、マシンスペックと相談し�
 
 ### Open WebUI
 
-`ghcr.io/open-webui/open-webui:ollama` の pull のみで完了する。
+`docker compose up -d` でコンテナがインストールされる。
 
-## Docker command
+### SearNXG
 
-この例の `compose.yaml` は、以下のコマンドと同等である。
-
-```docker
-docker run -d --gpus all --network=host -v open-webui:/app/backend/data -e OLLAMA_BASE_URL=http://127.0.0.1:11434 -e ENABLE_WEB_SEARCH=true -e WEB_SEARCH_ENGINE=duckduckgo --name open-webui --restart always ghcr.io/open-webui/open-webui:ollama
-```
-
-Ollama との接続に手こずったため、以下のコマンドをベースにすることで問題を回避した: https://docs.openwebui.com/troubleshooting/connection-error#-docker-connection-error
+同上。
